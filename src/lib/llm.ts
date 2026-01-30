@@ -1,12 +1,26 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { getSystemPrompt } from './prompts'
+import { getApiConfig } from './apiConfig'
 
-const anthropic = new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
-  dangerouslyAllowBrowser: true, // For demo purposes - in production, use a backend
-})
+function createAnthropicClient(): Anthropic {
+  const config = getApiConfig()
+  
+  // Priority: localStorage > environment variable
+  const apiKey = config.apiKey || import.meta.env.VITE_ANTHROPIC_API_KEY
+  
+  if (!apiKey) {
+    throw new Error('API key not configured. Please add your Anthropic API key in settings.')
+  }
+  
+  return new Anthropic({
+    apiKey,
+    baseURL: config.apiUrl || undefined,
+    dangerouslyAllowBrowser: true, // For demo purposes - in production, use a backend
+  })
+}
 
 export async function generateStrudelCode(userPrompt: string): Promise<string> {
+  const anthropic = createAnthropicClient()
   const systemPrompt = getSystemPrompt()
   
   const response = await anthropic.messages.create({
@@ -36,4 +50,9 @@ export async function generateStrudelCode(userPrompt: string): Promise<string> {
   }
   
   return code.trim()
+}
+
+export function isApiConfigured(): boolean {
+  const config = getApiConfig()
+  return !!(config.apiKey || import.meta.env.VITE_ANTHROPIC_API_KEY)
 }

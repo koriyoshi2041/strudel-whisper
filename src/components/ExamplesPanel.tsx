@@ -5,6 +5,7 @@ const EXAMPLES = [
     code: `setcpm(128/4)
 s("bd*4, hh*8, ~ sd ~ sd")
   .bank("RolandTR909")`,
+    icon: '🏠',
   },
   {
     title: 'Lo-Fi Hip Hop',
@@ -20,6 +21,7 @@ stack(
     .lpf(1200)
     .gain(0.4)
 )`,
+    icon: '🌙',
   },
   {
     title: 'Acid Techno',
@@ -35,6 +37,7 @@ stack(
     .lpenv(4)
     .gain(0.7)
 )`,
+    icon: '⚡',
   },
   {
     title: 'Ambient Pad',
@@ -46,6 +49,7 @@ stack(
   .size(0.9)
   .gain(0.3)
   .slow(4)`,
+    icon: '🌌',
   },
   {
     title: 'Breakbeat',
@@ -55,6 +59,26 @@ s("breaks165:0")
   .chop(8)
   .sometimesBy(0.3, x => x.speed("2"))
   .room(0.3)`,
+    icon: '🥁',
+  },
+  {
+    title: 'Synthwave',
+    prompt: 'retro 80s synthwave with arpeggiator',
+    code: `setcpm(110/4)
+stack(
+  s("bd*4, ~ sd, hh*8")
+    .bank("RolandTR808"),
+  note("<c3 g3 ab3 bb3>/4")
+    .s("sawtooth")
+    .lpf(800)
+    .gain(0.6),
+  note("c4 eb4 g4 c5".fast(2))
+    .s("square")
+    .lpf(2000)
+    .gain(0.3)
+    .delay(0.3)
+)`,
+    icon: '🌆',
   },
 ]
 
@@ -64,22 +88,28 @@ interface ExamplesPanelProps {
 
 export function ExamplesPanel({ onSelect }: ExamplesPanelProps) {
   return (
-    <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
-      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-        <span>📚</span> Examples
-      </h2>
+    <div className="glass-card rounded-2xl p-6">
+      <div className="section-header">
+        <span className="section-header-icon text-amber-400">📚</span>
+        <h2 className="section-header-title">Examples</h2>
+      </div>
       
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {EXAMPLES.map((example) => (
           <button
             key={example.title}
             onClick={() => onSelect(example.prompt, example.code)}
-            className="p-3 bg-gray-800 hover:bg-gray-700 rounded-lg text-left transition-colors group"
+            className="example-btn group"
           >
-            <p className="font-medium text-sm group-hover:text-purple-400 transition-colors">
-              {example.title}
-            </p>
-            <p className="text-xs text-gray-500 mt-1 truncate">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg group-hover:scale-110 transition-transform">
+                {example.icon}
+              </span>
+              <p className="example-title font-medium text-sm text-gray-200 group-hover:text-purple-400 transition-colors">
+                {example.title}
+              </p>
+            </div>
+            <p className="text-xs text-gray-500 line-clamp-2">
               {example.prompt}
             </p>
           </button>
